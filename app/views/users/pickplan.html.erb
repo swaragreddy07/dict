@@ -1,0 +1,122 @@
+<style>
+@import url('https://fonts.googleapis.com/css?family=Lato:400,500,600,700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+html,body{
+  display: grid;
+  height: 100%;
+  place-items: center;
+  background: #0069d9;
+  font-family: 'Lato', sans-serif;
+}
+.wrapper{
+
+  display: inline-flex;
+  background: #fff;
+  height: 150px;
+  width: 500px;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 5px;
+  padding: 20px 15px;
+  box-shadow: 5px 5px 30px rgba(0,0,0,0.2);
+}
+.wrapper .option{
+  background: #fff;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 0 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0 10px;
+  border: 2px solid lightgrey;
+  transition: all 0.3s ease;
+}
+input[type="radio"]{
+display: none;
+  
+}
+#option-1:checked:checked ~ .option-1,
+#option-2:checked:checked ~ .option-2,
+#option-3:checked:checked ~ .option-3
+{
+  border-color: #0069d9;
+  background: #0069d9;
+}
+#option-1:checked:checked ~ .option-1 .dot,
+#option-2:checked:checked ~ .option-2 .dot,
+#option-2:checked:checked ~ .option-3 .dot
+
+{
+  background: #ADD8E6;
+}
+#option-1:checked:checked ~ .option-1 .dot::before,
+#option-2:checked:checked ~ .option-2 .dot::before,
+#option-3:checked:checked ~ .option-3 .dot::before
+{
+  opacity: 1;
+  transform: scale(1);
+}
+.wrapper .option span{
+  font-size: 20px;
+  color: #808080;
+}
+#option-1:checked:checked ~ .option-1 span,
+#option-2:checked:checked ~ .option-2 span,
+#option-3:checked:checked ~ .option-3 span
+
+{
+  color: #ADD8E6;
+   font-color:white;
+}
+.swarag{
+ color:white;
+  font-size: 50px;
+   margin-top:100px;
+}
+.pick{
+  margin-bottom:100px;
+  color:white;
+  font-size:17px;
+}
+.notice{
+  color:white;
+  font-size:25px;
+  margin-top:50px;
+}
+</style>
+<%if notice%>
+<p class="notice"><%=notice%></p>
+<%end%>
+<p class="swarag">Pick a plan</p>
+<div class="wrapper">
+ <input type="radio" name="select" id="option-1" >
+ <input type="radio" name="select" id="option-2" >
+ <input type="radio" name="select" id="option-3" >
+   <label for="option-1" class="option option-1">
+     <div class="dot"></div>
+      <span>1)5 API keys and 500 API Calls a day</span>
+      </label>
+   <label for="option-2" class="option option-2">
+     <div class="dot"></div>
+      <span>2)10 API keys and 2000 API Calls a day</span>
+   </label>
+<label for="option-3" class="option option-3">
+     <div class="dot"></div>
+      <span>3)unlimited API keys and 10000 API Calls a day</span>
+   </label>
+</div>
+<%=form_with url: '/pick',method: :get do |f|%>
+<div class="pick">
+<p>enter your choice</p><br>
+<%=f.text_field :plan%><br><br>
+<center><%=f.submit "submit"%></center>
+</div>
+<%end%>

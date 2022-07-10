@@ -1,0 +1,22 @@
+<%stylesheet_link_tag "home"%>
+<ul>
+  <div>
+  <li class = "active"><%=link_to "DASHBOARD",users_index_path%><br></li>
+  </div>
+  <li><%=link_to "LOGIN",users_login_path%><br></li>
+  <li><%=link_to "SIGNUP",users_signup_path%><br></li>
+</ul>
+
+
+<div class="container">
+<h1>Available APIs</h1>
+<p>API HOST:localhost:3000<p>
+<p>{apihost}/words/randomWord?api_key={api_key}</p>
+
+<p>{apihost}/words/{word}/definitions?api_key={api_key}</p>
+
+<p>{apihost}/words/{word}/examples?api_key={api_key}</p>
+
+<p>{apihost}/words/{word}/relatedWords?api_key={api_key}</p>
+
+</div>
