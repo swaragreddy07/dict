@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_07_182260) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_07_182261) do
   create_table "keys", force: :cascade do |t|
     t.string "key"
     t.datetime "created_at", null: false
@@ -35,6 +35,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_07_182260) do
     t.string "added_on"
     t.integer "total", default: 0
     t.string "email"
+    t.integer "key_count", default: 0
   end
 
   create_table "words", force: :cascade do |t|

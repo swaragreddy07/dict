@@ -34,7 +34,7 @@ class UsersController < ApplicationController
     else
       payload = { "username": user.username,
                   "password": user.password,
-                  "key_no":  keys.length()+1 }
+                  "key_no":  user.key_count+1 }
       secret = "ace_collage"
       token = JWT.encode payload, secret, 'HS256'
       keys.append(token)
@@ -45,6 +45,7 @@ class UsersController < ApplicationController
       user.keys = keys.inspect
       user.added_on = added_on.inspect
       user.count = count.inspect
+      user.key_count = user.key_count + 1
       user.save
       redirect_to users_index_path
     end
@@ -83,7 +84,7 @@ class UsersController < ApplicationController
     
   def register
     date = Date.today.to_s
-    @user = User.new(username: params[:username], password: params[:password],plan: "1", date: date, count: '[]', keys: '[]', added_on: '[]', total: 0, email: params[:email])
+    @user = User.new(username: params[:username], password: params[:password],plan: "1", date: date, count: '[]', keys: '[]', added_on: '[]', total: 0, email: params[:email],key_count: 0)
     if @user.save
       session[:id] = @user.id
       redirect_to users_pickplan_path
