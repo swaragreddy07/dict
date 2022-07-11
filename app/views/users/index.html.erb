@@ -7,15 +7,18 @@
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
+
 .styled-table thead tr {
     background-color: #009879;
     color: #ffffff;
     text-align: left;
 }
+
 .styled-table th,
 .styled-table td {
     padding: 12px 15px;
 }
+
 .styled-table tbody tr {
     border-bottom: 1px solid #dddddd;
 }
@@ -27,14 +30,17 @@
 .styled-table tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
 }
+
 .styled-table tbody tr.active-row {
     font-weight: bold;
     color: #009879;
 }
+
 .notice{
   font-size:20px;
   color:red;
 }
+
 .button{
   background-color: #4CAF50; /* Green */
   border: none;
@@ -46,9 +52,11 @@
   font-size: 16px;
   border-radius:10px;
 }
+
 .button:hover{
   background-color: #008CBA;
 }
+
 .delete{
   background-color:#f44336;
   border: none;
@@ -60,76 +68,79 @@
   font-size: 16px;
   border-radius:10px;
 }
+
 .api{
   font-size:25px;
   color:green;
 }
+
 .usage{
   padding-left:830px;
   font-size:17px;
   color:orange;
 }
+
 .welcome{
   font-size:20px;
 }
 </style>
-<%stylesheet_link_tag "home"%>
+
+<% stylesheet_link_tag "home" %>
 <ul>
   <div>
-  <li class = "active"><%=link_to "HOME",root_path%><br></li>
+  <li class = "active"><%= link_to "HOME", root_path %><br></li>
   </div>
-  <li><%=link_to "LOGOUT",users_logout_path%></li>
+  <li><%= link_to "LOGOUT", users_logout_path %></li>
 </ul>
 </div>
 <div class="welcome">
-<p><%="welcome "+User.find(session[:id]).username%><br><p>
+  <p><%= "welcome "+ User.find(session[:id]).username %><br><p>
 </div>
 <center>
-<%if notice%>
-<div class="notice">
-<p><%=notice%></p>
-</div>
-<%end%>
-<%user=User.find(session[:id])%>
-<%keys=JSON.parse user.keys%>
-<%added_on=JSON.parse user.added_on%>
-<%count=JSON.parse user.count%>
-<%if keys.length()!=0%>
-<div class="api">
-<p><%="Your API Keys"%></p>
-</div>
-<%user=User.find(session[:id])%>
-<%if user.plan=="1"%>
-<%usage=500%>
-<%elsif user.plan=="2"%>
-<%usage=2000%>
-<%else%>
-<%usage=10000%>
-<%end%>
-<div class="usage">
-<p><%="Today usage: "+user.total.to_s+"/"+usage.to_s%>
-</div>
-<table class="styled-table">
-    <thead>
-<tr>
-<th style="max-width: 60vw; overflow: hidden"><%="API KEYS"%></th>
-<th><%="created on"%></th>
-<th><%="Usage"%></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<%for i in 0..keys.length()-1%>
-  <td style="max-width: 60vw;"><p style="max-width: 60vw; word-wrap: break-word;"><%=keys[i]+"    "%><%= link_to "delete key",deletekey_path(i),class:"delete"%></p></td>
-  <td><%=added_on[i]%></td>
-  <td><%=count[i]%></td>
-  </tr>
-  </tbody>
-<%end%>
-</table>
-<%else%>
-<p>you dont have any keys</p>
-<%end%>
-<br>
-<%=link_to "add key",users_addkey_path,class: "button"%>
+  <% if notice %>
+    <div class="notice">
+      <p><%= notice %></p>
+    </div>
+  <% end %>
+  <% user = User.find(session[:id]) %>
+  <% keys = JSON.parse user.keys %>
+  <% added_on = JSON.parse user.added_on %>
+  <% count = JSON.parse user.count %>
+  <% if keys.length()!= 0 %>
+    <div class = "api">
+      <p><%= "Your API Keys" %></p>
+    </div>
+    <% if user.plan=="1" %>
+      <% usage=500 %>
+    <% elsif user.plan=="2" %>
+      <% usage=2000 %>
+    <% else %>
+      <% usage=10000 %>
+    <% end %>
+    <div class="usage">
+      <p><%= "Today usage: "+ user.total.to_s+ "/"+ usage.to_s %>
+    </div>
+    <table class = "styled-table">
+      <thead>
+        <tr>
+          <th style = "max-width: 60vw; overflow: hidden"><%="API KEYS"%></th>
+          <th><%= "created on" %></th>
+          <th><%= "Usage" %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% for i in 0..keys.length()-1 %>
+            <td style="max-width: 60vw;"><p style="max-width: 60vw; word-wrap: break-word;"><%= keys[i]+"    " %><%= link_to "delete key", deletekey_path(i), class:"delete" %></p></td>
+            <td><%= added_on[i] %></td>
+            <td><%= count[i] %></td>
+        </tr>
+      </tbody>
+     <% end %>
+    </table>
+  <% else %>
+    <p>you dont have any keys</p>
+  <% end %>
+  <br>
+  <%= link_to "add key", users_addkey_path, class: "button" %>
 </center>
