@@ -58,9 +58,9 @@ class UsersController < ApplicationController
     keys.delete_at(params[:id].to_i)
     added_on.delete_at(params[:id].to_i)
     count.delete_at(params[:id].to_i)
-    user.keys=keys
-    user.added_on=added_on
-    user.count=count
+    user.keys = keys
+    user.added_on = added_on
+    user.count = count
     user.save
     redirect_to users_index_path
   end
