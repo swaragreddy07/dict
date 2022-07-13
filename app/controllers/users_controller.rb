@@ -10,13 +10,14 @@ class UsersController < ApplicationController
   def index
     if session[:id] == nil
       redirect_to root_path
-    end
-    user = User.find(session[:id])
-    date = Date.today.to_s
-    if user.date!= date
-      user.date = date
-      user.total = 0
-      user.save
+    else
+      user = User.find(session[:id])
+      date = Date.today.to_s
+      if user.date!= date
+        user.date = date
+        user.total = 0
+        user.save
+      end
     end
   end
 
