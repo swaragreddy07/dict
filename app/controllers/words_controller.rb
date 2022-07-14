@@ -1,35 +1,7 @@
 class WordsController < ApplicationController
-  def key_is_prsent(api_key)
-    user = User.find(session[:id])
-    keys = JSON.parse user.keys
-    if user.plan == '1'
-      usage = 500
-    elsif user.plan == '2'
-      usage = 2000
-    else
-      usage = 10000
-    end
-    if user.total>= usage
-      return 1
-    else
-      present = false
-      count = JSON.parse user.count
-      for i in 0..keys.length()-1
-        if keys[i] == api_key
-          present = true
-          count[i] = count[i]+1
-          user.count = count.inspect
-          user.total = user.total+1
-          user.save
-          break
-        end
-      end
-    end
-    return present
-  end
-  
   def randomWord
-    api_key = key_is_prsent(params[:api_key])
+    word = Word.new
+    api_key = word.key_is_prsent(params[:api_key], session[:id])
     if api_key == true
       word = Word.all
       words = []
@@ -46,12 +18,13 @@ class WordsController < ApplicationController
   end
 
   def definitions
-    api_key = key_is_prsent(params[:api_key])
+    word = Word.new
+    api_key = word.key_is_prsent(params[:api_key], session[:id])
     curr_word = params[:word]
     if api_key == true
-      definition = Word.find_by(word: curr_word)
-    if definition!= nil 
-      return render json: definition.def
+      word = Word.find_by(word: curr_word)
+    if word!= nil 
+      return render json: word.definition
     else
       return render json: 'word does not exist in our database'
     end
@@ -63,14 +36,15 @@ class WordsController < ApplicationController
   end
 
   def examples
-    api_key = key_is_prsent(params[:api_key])
+    word = Word.new
+    api_key = word.key_is_prsent(params[:api_key], session[:id])
     curr_word = params[:word]
     if api_key == true
-     example = Word.find_by(word: curr_word)
-    if example == nil
+     word = Word.find_by(word: curr_word)
+    if word == nil
       return render json: 'word does not exist in our database'
     else
-      return render json: example.exam 
+      return render json: word.example
     end
     elsif api_key == 1
       return render json: "You cannot make anymore api calls today"
@@ -80,14 +54,15 @@ class WordsController < ApplicationController
   end
 
   def related
-    api_key = key_is_prsent(params[:api_key])
+    word = Word.new
+    api_key = word.key_is_prsent(params[:api_key], session[:id])
     curr_word= params[:word]
     if api_key == true
-      related_words = Word.find_by(word: curr_word)
-    if related_words == nil
+      word = Word.find_by(word: curr_word)
+    if word == nil
       return render json: 'the word does not exist in our database'
     else
-      return render json: related_words.related
+      return render json: word.related
     end
     elsif api_key == 1
       return render json: "You cannot make anymore api calls today"

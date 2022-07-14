@@ -10,15 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_07_182261) do
-  create_table "keys", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2022_07_13_111516) do
+  create_table "userkeys", force: :cascade do |t|
     t.string "key"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "numbers", force: :cascade do |t|
-    t.integer "num"
+    t.date "added_on"
+    t.integer "count"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -28,11 +25,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_07_182261) do
     t.string "password"
     t.string "plan"
     t.string "date"
-    t.string "keys"
-    t.string "count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "added_on"
     t.integer "total", default: 0
     t.string "email"
     t.integer "key_count", default: 0
@@ -40,8 +34,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_07_182261) do
 
   create_table "words", force: :cascade do |t|
     t.string "word"
-    t.string "def"
-    t.string "exam"
+    t.string "definition"
+    t.string "example"
     t.string "related"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

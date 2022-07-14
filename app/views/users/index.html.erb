@@ -103,9 +103,7 @@
     </div>
   <% end %>
   <% user = User.find(session[:id]) %>
-  <% keys = JSON.parse user.keys %>
-  <% added_on = JSON.parse user.added_on %>
-  <% count = JSON.parse user.count %>
+  <% keys = user.userkeys.all %>
   <% if keys.length()!= 0 %>
     <div class = "api">
       <p><%= "Your API Keys" %></p>
@@ -130,10 +128,10 @@
       </thead>
       <tbody>
         <tr>
-          <% for i in 0..keys.length()-1 %>
-            <td style="max-width: 60vw;"><p style="max-width: 60vw; word-wrap: break-word;"><%= keys[i]+"    " %><%= link_to "delete key", deletekey_path(i), class:"delete" %></p></td>
-            <td><%= added_on[i] %></td>
-            <td><%= count[i] %></td>
+          <% keys.each do |item| %>
+            <td style="max-width: 60vw;"><p style="max-width: 60vw; word-wrap: break-word;"><%= item.key+"    " %><%= link_to "delete key", deletekey_path(item.id), class:"delete" %></p></td>
+            <td><%= item.added_on %></td>
+            <td><%= item.count %></td>
         </tr>
       </tbody>
      <% end %>

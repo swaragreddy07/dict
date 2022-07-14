@@ -26,44 +26,24 @@ class UsersController < ApplicationController
   end
     
   def addkey
-    user=User.find(session[:id])
-    keys=JSON.parse user.keys
-    if user.plan == '1' && keys.length() == 5
-      redirect_to users_index_path, notice: "you cannot add anymore keys"
-    elsif user.plan == '2' && keys.length() == 10
-      redirect_to users_index_path, notice: "you cannot add anymore keys"
-    else
-      payload = { "username": user.username,
-                  "password": user.password,
-                  "key_no":  user.key_count+1 }
-      secret = "ace_collage"
-      token = JWT.encode payload, secret, 'HS256'
-      keys.append(token)
-      added_on = JSON.parse user.added_on
-      added_on.append(Date.today.to_s)
-      count = JSON.parse user.count
-      count.append(0)
-      user.keys = keys.inspect
-      user.added_on = added_on.inspect
-      user.count = count.inspect
-      user.key_count = user.key_count + 1
-      user.save
-      redirect_to users_index_path
-    end
+    user = User.find(session[:id])
+    keys = user.userkeys.all
+      if user.plan == '1' && keys.length() == 5
+        redirect_to users_index_path, notice: "you cannot add anymore keys"
+      elsif user.plan == '2' && keys.length() == 10
+        redirect_to users_index_path, notice: "you cannot add anymore keys"
+      else
+        token = User.new
+        token.generate_token(user)
+        redirect_to users_index_path
+      end
   end
   
   def deletekey
     user = User.find(session[:id])
-    keys = JSON.parse user.keys
-    added_on = JSON.parse user.added_on
-    count = JSON.parse user.count
-    keys.delete_at(params[:id].to_i)
-    added_on.delete_at(params[:id].to_i)
-    count.delete_at(params[:id].to_i)
-    user.keys = keys
-    user.added_on = added_on
-    user.count = count
-    user.save
+    key = user.userkeys.find_by(params[:id])
+    key.destroy
+    key.save
     redirect_to users_index_path
   end
   
@@ -73,19 +53,18 @@ class UsersController < ApplicationController
   
   def plan
     user = User.find(session[:id])
-    plan = params[:plan]
-    if plan!= "1" && plan!= "2" && plan!= "3"
+    plan = User.new
+    valid = plan.generate_plan(user, params[:plan])
+    if valid == false
       redirect_to users_pickplan_path, notice: "please pick a valid plan"
     else
-      user.plan = plan
-      user.save
       redirect_to users_index_path
     end
   end
     
   def register
     date = Date.today.to_s
-    @user = User.new(username: params[:username], password: params[:password],plan: "1", date: date, count: '[]', keys: '[]', added_on: '[]', total: 0, email: params[:email],key_count: 0)
+    @user = User.new(username: params[:username], password: params[:password],plan: "1", total: 0, email: params[:email],key_count: 0)
     if @user.save
       session[:id] = @user.id
       redirect_to users_pickplan_path
