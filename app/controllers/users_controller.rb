@@ -52,9 +52,7 @@ class UsersController < ApplicationController
   end
   
   def pickplan
-    if session[:id]!= nil
-      redirect_to users_index_path
-    end
+  
   end
   
   def plan
