@@ -133,6 +133,9 @@ input {
 }
 
 </style>
+<% if notice %>
+  <%= notice %>
+<% end %>
 </head>
 
 <body>
@@ -145,12 +148,12 @@ input {
     <% if notice %>
     <center><p><%= notice %></p></center>
     <% end %>
-    <%= form_with url: '/swarag',method: :get do |f| %>
-    <%= f.label :username %><br>
-    <%= f.text_field :username %><br>
-    <%= f.label :password %><br>
-    <%= f.password_field :password %><br><br>
-    <%= f.submit 'Log In',class: "button" %>
+    <%= form_with url: '/login',method: :get do |form| %>
+    <%= form.label :username %><br>
+    <%= form.text_field :username %><br>
+    <%= form.label :password %><br>
+    <%= form.password_field :password %><br><br>
+    <%= form.submit 'Log In',class: "button" %>
     <% end %>
     <div class = "social">
       <div class = "go"><%= link_to "Home",root_path %></div>

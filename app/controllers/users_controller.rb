@@ -1,6 +1,14 @@
 require 'json'
 
 class UsersController < ApplicationController
+  before_action :require_login, except: [:login, :signup, :user_validation, :register, :home]
+
+  def require_login
+    if session[:id] == nil
+      redirect_to root_path, notice: "You must be logged in to access the dasboard"
+    end
+  end
+
   def signup
     if session[:id]!= nil
       redirect_to users_index_path 
@@ -8,16 +16,12 @@ class UsersController < ApplicationController
   end
 
   def index
-    if session[:id] == nil
-      redirect_to root_path
-    else
-      user = User.find(session[:id])
-      date = Date.today.to_s
-      if user.date!= date
-        user.date = date
-        user.total = 0
-        user.save
-      end
+    user = User.find(session[:id])
+    date = Date.today.to_s
+    if user.date!= date
+      user.date = date
+      user.total = 0
+      user.save
     end
   end
 
@@ -48,7 +52,9 @@ class UsersController < ApplicationController
   end
   
   def pickplan
-
+    if session[:id]!= nil
+      redirect_to users_index_path
+    end
   end
   
   def plan
@@ -74,8 +80,8 @@ class UsersController < ApplicationController
   end
   
   def login
-    if session[:id]!=nil
-      redirect_to users_index_path 
+    if session[:id]!= nil
+      redirect_to root_path
     end
   end
   
@@ -84,7 +90,7 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
   
-  def enter
+  def user_validation
     user = User.find_by(username: params[:username])
     if user!= nil && user.password == params[:password]
       session[:id] = user.id

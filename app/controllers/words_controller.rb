@@ -1,12 +1,12 @@
 class WordsController < ApplicationController
   def randomWord
-    word = Word.new
-    api_key = word.key_is_prsent(params[:api_key], session[:id])
+    key = Userkey.new
+    api_key = key.key_is_prsent(params[:api_key])
     if api_key == true
-      word = Word.all
+      all_words = Word.all
       words = []
-      word.each do |i|
-        words.append(i.word)
+      all_words.each do |word|
+        words.append(word.word)
       end
       words.shuffle!()
       return render json: words[0]
@@ -18,11 +18,11 @@ class WordsController < ApplicationController
   end
 
   def definitions
-    word = Word.new
-    api_key = word.key_is_prsent(params[:api_key], session[:id])
-    curr_word = params[:word]
+    key = Userkey.new
+    api_key = key.key_is_prsent(params[:api_key])
+    current_word = params[:word]
     if api_key == true
-      word = Word.find_by(word: curr_word)
+      word = Word.find_by(word: current_word)
     if word!= nil 
       return render json: word.definition
     else
@@ -36,11 +36,11 @@ class WordsController < ApplicationController
   end
 
   def examples
-    word = Word.new
-    api_key = word.key_is_prsent(params[:api_key], session[:id])
-    curr_word = params[:word]
+    key = Userkey.new
+    api_key = key.key_is_prsent(params[:api_key])
+    current_word = params[:word]
     if api_key == true
-     word = Word.find_by(word: curr_word)
+     word = Word.find_by(word: current_word)
     if word == nil
       return render json: 'word does not exist in our database'
     else
@@ -53,16 +53,16 @@ class WordsController < ApplicationController
     end
   end
 
-  def related
-    word = Word.new
-    api_key = word.key_is_prsent(params[:api_key], session[:id])
-    curr_word= params[:word]
+  def relatedwords
+    key = Userkey.new
+    api_key = key.key_is_prsent(params[:api_key])
+    current_word = params[:word]
     if api_key == true
-      word = Word.find_by(word: curr_word)
+      word = Word.find_by(word: current_word)
     if word == nil
       return render json: 'the word does not exist in our database'
     else
-      return render json: word.related
+      return render json: word.relatedwords
     end
     elsif api_key == 1
       return render json: "You cannot make anymore api calls today"

@@ -6,7 +6,10 @@
   <li><%= link_to "LOGIN",users_login_path %><br></li>
   <li><%= link_to "SIGNUP",users_signup_path %><br></li>
 </ul>
-
+<% if notice %>
+  <br>
+  <p style="color: red"><%= notice %></p>
+<% end %>
 <div class="container">
   <h1>Available APIs</h1>
   <p>API HOST:localhost:3000<p>
