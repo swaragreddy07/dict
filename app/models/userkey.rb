@@ -1,37 +1,18 @@
 class Userkey < ApplicationRecord
     belongs_to :user
 
-  def key_is_prsent(api_key)
-    users = User.all
-    key_is_present = false
-    users.each do |user|
-      keys = user.userkeys.all
-      if user.plan == '1'
-          usage = 500
-      elsif user.plan == '2'
-          usage = 2000
-      else
-          usage = 10000
-      end
-      present = false
-      keys.each do |item|
-        if item.key == api_key
-          present = true
-          item.count = item.count+1
-          user.total = user.total+1
-          user.save
-          item.save
-          key_is_present = true
-          break
-        end
-      end
-      if key_is_present == true
-        if user.total>= usage
-            return 1
-        else
-          return present
-        end
-      end
-    end
+  def self.validate_key(api_key)
+    return false unless key = Userkey.find_by(key: api_key) 
+    return 1 if !key.can_access_key
+
+    key.count += 1
+    key.user.total += 1
+    key.save && key.user.save
+  end
+
+  def can_access_key
+    user = self.user
+    return false if user.plan == "1" && user.total > 200 || user.plan == "2" && user.total > 500 || user.plan == "3" && user.count == "1000"
+    true
   end
 end

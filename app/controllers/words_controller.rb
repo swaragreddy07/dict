@@ -1,7 +1,6 @@
 class WordsController < ApplicationController
   def randomWord
-    key = Userkey.new
-    api_key = key.key_is_prsent(params[:api_key])
+    api_key = Userkey.validate_key(params[:api_key])
     if api_key == true
       all_words = Word.all
       words = []
@@ -18,8 +17,7 @@ class WordsController < ApplicationController
   end
 
   def definitions
-    key = Userkey.new
-    api_key = key.key_is_prsent(params[:api_key])
+    api_key = Userkey.validate_key(params[:api_key])
     current_word = params[:word]
     if api_key == true
       word = Word.find_by(word: current_word)
@@ -36,8 +34,7 @@ class WordsController < ApplicationController
   end
 
   def examples
-    key = Userkey.new
-    api_key = key.key_is_prsent(params[:api_key])
+    api_key = Userkey.validate_key(params[:api_key])
     current_word = params[:word]
     if api_key == true
      word = Word.find_by(word: current_word)
@@ -54,8 +51,7 @@ class WordsController < ApplicationController
   end
 
   def relatedwords
-    key = Userkey.new
-    api_key = key.key_is_prsent(params[:api_key])
+    api_key = Userkey.validate_key(params[:api_key])
     current_word = params[:word]
     if api_key == true
       word = Word.find_by(word: current_word)
