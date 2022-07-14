@@ -12,7 +12,7 @@ class Userkey < ApplicationRecord
 
   def can_access_key
     user = self.user
-    return false if user.plan == "1" && user.total > 200 || user.plan == "2" && user.total > 500 || user.plan == "3" && user.count == "1000"
+    return false if user.plan == "1" && user.total >= 500 || user.plan == "2" && user.total >= 2000 || user.plan == "3" && user.count >= 10000
     true
   end
 end
