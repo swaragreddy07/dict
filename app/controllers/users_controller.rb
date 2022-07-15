@@ -45,7 +45,7 @@ class UsersController < ApplicationController
   
   def deletekey
     user = User.find(session[:id])
-    key = user.userkeys.find_by(params[:id])
+    key = user.userkeys.find(params[:id])
     key.destroy
     key.save
     redirect_to users_index_path
