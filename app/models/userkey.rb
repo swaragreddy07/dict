@@ -7,7 +7,7 @@ class Userkey < ApplicationRecord
       return false
     else 
       user = User.find(key.user_id)
-      if user.plan == "1" && user.total >= 500 || user.plan == "2" && user.total >= 2000 ||user.plan == "2" && user.total >= 10000
+      if user.plan == "1" && user.total >= 500 || user.plan == "2" && user.total >= 2000 ||user.plan == "3" && user.total >= 10000
         return 1
       else
         key.count = key.count + 1
