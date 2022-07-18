@@ -3,16 +3,22 @@ class User < ApplicationRecord
     validates :username,:password,:email,:plan, presence: true
     validates :username,:email, uniqueness: true
 
-    def generate_token(user)
-      payload = { "username": user.username,
-            "password": user.password,
-            "key_no":  user.key_count+1 }
-      secret = "ace_collage"
-      token = JWT.encode payload, secret, 'HS256'
-      key=user.userkeys.create(key: token,added_on: Date.today,count: 0)
-      key.save
-      user.key_count = user.key_count + 1
-      user.save
+    def keys_limit_reached?
+      keys_count = userkeys.count
+      (plan == '1' && keys_count == 5) ||
+      (plan == '2' && keys_count == 10)
+    end
+
+  def usage_limit_reached?
+      plan == "1" && total >= 500 || 
+      plan == "2" && total >= 2000 ||
+      plan == "3" && total >= 10000
+  end
+
+    def add_key
+      userkeys.create(added_on: Date.today, count: 0)
+      self.key_count = key_count + 1
+      save
     end
 
     def generate_plan(user, plan)

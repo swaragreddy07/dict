@@ -1,21 +1,26 @@
 class Userkey < ApplicationRecord
-    belongs_to :user
+  belongs_to :user
+
+  before_create :generate_token
 
   def self.validate_key(api_key)
-    key = Userkey.find_by(key: api_key)
-    if key == nil
-      return false
-    else 
-      user = User.find(key.user_id)
-      if user.plan == "1" && user.total >= 500 || user.plan == "2" && user.total >= 2000 ||user.plan == "3" && user.total >= 10000
-        return 1
-      else
-        key.count = key.count + 1
-        user.total = user.total + 1
-        key.save
-        user.save
-        return true
-      end
-    end
+    Userkey.find_by(key: api_key)
   end
+
+  def increment_usage
+        key.count = key.count + 1
+        key.save
+
+        user.total = user.total + 1
+        user.save
+  end
+
+  private
+
+  def generate_token
+    payload = { "username": user.username,
+            "password": user.password,
+            "key_no":  user.key_count + 1 }
+    secret = "ace_collage"
+    self.key = JWT.encode payload, secret, 'HS256'
 end 
