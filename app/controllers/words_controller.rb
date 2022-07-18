@@ -19,51 +19,18 @@ class WordsController < ApplicationController
   def definitions
     api_key = Userkey.validate_key(params[:api_key])
     current_word = params[:word]
-    if api_key == true
-      word = Word.find_by(word: current_word)
-    if word!= nil 
-      return render json: word.definition
-    else
-      return render json: 'word does not exist in our database'
-    end
-    elsif api_key == 1
-      return render json: "You cannot make anymore api calls today"
-    else
-      return render json: 'invalid key'
-    end
+    return render json: Word.validate_word(current_word, 1, api_key)
   end
 
   def examples
     api_key = Userkey.validate_key(params[:api_key])
     current_word = params[:word]
-    if api_key == true
-     word = Word.find_by(word: current_word)
-    if word == nil
-      return render json: 'word does not exist in our database'
-    else
-      return render json: word.example
-    end
-    elsif api_key == 1
-      return render json: "You cannot make anymore api calls today"
-    else
-      return render json: 'invalid key', status: 401
-    end
+    return render json: Word.validate_word(current_word, 2, api_key)
   end
 
   def relatedwords
     api_key = Userkey.validate_key(params[:api_key])
     current_word = params[:word]
-    if api_key == true
-      word = Word.find_by(word: current_word)
-    if word == nil
-      return render json: 'the word does not exist in our database'
-    else
-      return render json: word.relatedwords
-    end
-    elsif api_key == 1
-      return render json: "You cannot make anymore api calls today"
-    else
-      return render json: 'invalid key'
-    end
+    return render json: Word.validate_word(current_word, 3, api_key)
   end
 end
