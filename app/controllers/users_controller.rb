@@ -49,9 +49,9 @@ class UsersController < ApplicationController
     
   def register
     date = Date.today
-    user = User.new(username: params[:username], password: params[:password],plan: "1", total_api_calls_today: 0, email: params[:email],key_count: 0,last_activity_on: date)
-    if user.save
-      session[:id] = user.id
+    @user = User.new(username: params[:username], password: params[:password],plan: "1", total_api_calls_today: 0, email: params[:email],key_count: 0,last_activity_on: date)
+    if @user.save
+      session[:id] = @user.id
       redirect_to users_pickplan_path
     else
       render :signup
