@@ -1,25 +1,44 @@
 class WordsController < ApplicationController
+  before_action :validate_key
+  before_action :load_word, except: [:random_word]
+
   def randomWord
-    api_key = Userkey.validate_key(params[:api_key])
-    current_word = "white"
-    return render json: Word.validate_word(current_word, "random_word", api_key)
+    return render json: Word.generate_random_word
   end
 
   def definitions
-    api_key = Userkey.validate_key(params[:api_key])
-    current_word = params[:word]
-    return render json: Word.validate_word(current_word, "word_definitions", api_key)
+    return render json: @word.definition
   end
 
   def examples
-    api_key = Userkey.validate_key(params[:api_key])
-    current_word = params[:word]
-    return render json: Word.validate_word(current_word, "word_examples", api_key)
+    return render json: @word.example
   end
 
   def relatedwords
-    api_key = Userkey.validate_key(params[:api_key])
-    current_word = params[:word]
-    return render json: Word.validate_word(current_word, "related_words", api_key)
+    return render json: @word.relatedwords
   end
+  
+  private
+
+    def validate_key
+      if @key = Userkey.validate_key(params[:api_key])
+         @user = User.find(@key.user_id)
+        if !@user_api_calls_limit_reached = @user.usage_limit_reached?
+          @key.increment_key_usage
+          @user.increment_api_calls_usage
+        else
+          return render json: "you cannot make any more api calls today"
+        end
+      else
+        return render json: "invalid key"
+      end
+
+    end
+   
+    def load_word
+      @word = Word.find_by(word: params[:word])
+      if !@word
+        return render json: "word does not exist in our database"
+      end
+    end
 end

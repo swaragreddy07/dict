@@ -116,7 +116,7 @@
       <% usage=10000 %>
     <% end %>
     <div class="usage">
-      <p><%= "Today usage: "+ user.total.to_s+ "/"+ usage.to_s %>
+      <p><%= "Today usage: "+ user.total_api_calls_today.to_s+ "/"+ usage.to_s %>
     </div>
     <table class = "styled-table">
       <thead>
@@ -131,7 +131,7 @@
           <% keys.each do |item| %>
             <td style="max-width: 60vw;"><p style="max-width: 60vw; word-wrap: break-word;"><%= item.key+"    " %><%= link_to "delete key", deletekey_path(item.id), class:"delete" %></p></td>
             <td><%= item.added_on %></td>
-            <td><%= item.count %></td>
+            <td><%= item.total_key_usage %></td>
         </tr>
       </tbody>
      <% end %>

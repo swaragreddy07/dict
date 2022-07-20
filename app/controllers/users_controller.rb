@@ -1,27 +1,17 @@
-require 'json'
-
 class UsersController < ApplicationController
-  before_action :require_login, except: [:login, :signup, :user_validation, :register, :home]
-
-  def require_login
-    if session[:id] == nil
-      redirect_to root_path, notice: "You must be logged in to access the dasboard"
-    end
-  end
+  before_action :require_login, only: [:addkey, :deletekey,:pickplan, :plan, :logout, :index] 
+  before_action :logged_in, only: [:signup, :login]
 
   def signup
-    if session[:id]!= nil
-      redirect_to users_index_path 
-    end
+
   end
 
   def index
-    user = User.find(session[:id])
-    date = Date.today.to_s
-    if user.date!= date
-      user.date = date
-      user.total = 0
-      user.save
+    today = Date.today
+    if @user.last_activity_on!= today
+      @user.last_activity_on = today
+      @user.total_api_calls_today = 0
+      @user.save
     end
   end
 
@@ -30,24 +20,17 @@ class UsersController < ApplicationController
   end
     
   def addkey
-    user = User.find(session[:id])
-    keys = user.userkeys.all
-      if user.plan == '1' && keys.length() == 5
-        redirect_to users_index_path, notice: "you cannot add anymore keys"
-      elsif user.plan == '2' && keys.length() == 10
-        redirect_to users_index_path, notice: "you cannot add anymore keys"
-      else
-        token = User.new
-        token.generate_token(user)
-        redirect_to users_index_path
-      end
+    if @user.user_key_limit_reached?
+      redirect_to users_index_path, notice: "you cannot add anymore keys"
+    else
+      @user.generate_key
+      redirect_to users_index_path
+    end
   end
   
   def deletekey
-    user = User.find(session[:id])
-    key = user.userkeys.find(params[:id])
+    key = @user.userkeys.find(params[:id])
     key.destroy
-    key.save
     redirect_to users_index_path
   end
   
@@ -56,10 +39,8 @@ class UsersController < ApplicationController
   end
   
   def plan
-    user = User.find(session[:id])
-    plan = User.new
-    valid = plan.generate_plan(user, params[:plan])
-    if valid == false
+    valid = @user.generate_plan(params[:plan])
+  if !valid
       redirect_to users_pickplan_path, notice: "please pick a valid plan"
     else
       redirect_to users_index_path
@@ -67,10 +48,10 @@ class UsersController < ApplicationController
   end
     
   def register
-    date = Date.today.to_s
-    @user = User.new(username: params[:username], password: params[:password],plan: "1", total: 0, email: params[:email],key_count: 0)
-    if @user.save
-      session[:id] = @user.id
+    date = Date.today
+    user = User.new(username: params[:username], password: params[:password],plan: "1", total_api_calls_today: 0, email: params[:email],key_count: 0,last_activity_on: date)
+    if user.save
+      session[:id] = user.id
       redirect_to users_pickplan_path
     else
       render :signup
@@ -78,9 +59,7 @@ class UsersController < ApplicationController
   end
   
   def login
-    if session[:id]!= nil
-      redirect_to root_path
-    end
+
   end
   
   def logout
@@ -95,6 +74,22 @@ class UsersController < ApplicationController
       redirect_to users_index_path
     else
       redirect_to users_login_path, notice: 'invalid username or  password'
+    end
+  end
+
+  private
+
+  def require_login
+    if session[:id] == nil
+      redirect_to root_path, notice: "You must be logged in to access the dasboard"
+    else
+      @user = User.find(session[:id])
+    end
+  end
+
+  def logged_in
+    if session[:id].present?
+      redirect_to root_path, notice: "you are already logged in"
     end
   end
 end

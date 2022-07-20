@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_13_111517) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_13_111521) do
   create_table "userkeys", force: :cascade do |t|
     t.string "key"
     t.date "added_on"
-    t.integer "count"
+    t.integer "total_key_usage"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -24,10 +24,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_13_111517) do
     t.string "username"
     t.string "password"
     t.string "plan"
-    t.string "date"
+    t.date "last_activity_on"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "total", default: 0
+    t.integer "total_api_calls_today", default: 0
     t.string "email"
     t.integer "key_count", default: 0
   end
