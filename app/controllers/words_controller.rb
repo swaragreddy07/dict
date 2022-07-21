@@ -22,8 +22,8 @@ class WordsController < ApplicationController
 
   def validate_key
     if @key = Userkey.validate_key(params[:api_key])
-        @user = User.find(@key.user_id)
-      if !@user_api_calls_limit_reached = @user.usage_limit_reached?
+      @user = User.find(@key.user_id)
+      if !@user.usage_limit_reached?
         @key.increment_key_usage
         @user.increment_api_calls_usage
       else
