@@ -21,18 +21,17 @@ class WordsController < ApplicationController
   private
 
   def validate_key
-    if @key = Userkey.validate_key(params[:api_key])
-      @user = User.find(@key.user_id)
-      if !@user.usage_limit_reached?
-        @key.increment_key_usage
-        @user.increment_api_calls_usage
+    if key = Userkey.validate_key(params[:api_key])
+      user = key.user
+      if !user.usage_limit_reached?
+        key.increment_key_usage
+        user.increment_api_calls_usage
       else
         return render json: "you cannot make any more api calls today"
       end
     else
       return render json: "invalid key"
     end
-
   end
    
   def load_word
